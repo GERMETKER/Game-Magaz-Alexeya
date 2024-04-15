@@ -16,10 +16,12 @@ void ShopStorage();
 void Selling();
 void PrintReceipt();
 void ChangePrice();
-
 void AddElementToReceipt(int& receiptSize, int id, int count);
-
-
+void RemFrStorage();
+void AddToStorage();
+void ChangeStorage();
+void AddElToEnd();
+void DelElByIn();
 
 //тестовые функции
 template <typename ArrType>
@@ -27,6 +29,7 @@ void PrintArr(ArrType arr[], int size);
 // Размеры
 int size = 10;
 int receiptSize = 1;
+double itogSum = 0;
 // Глобальные массивы склада
 int* idArr = new int[size];
 std::string* nameArr = new std::string[size];
@@ -178,23 +181,23 @@ void Shop()
         }
         else if (choose == 3)
         {
-
+            ChangePrice();
         }
         else if (choose == 4)
         {
-
+            RemFrStorage();
         }
         else if (choose == 5)
         {
-
+            AddToStorage();
         }
         else if (choose == 6)
         {
-
+            ChangeStorage();
         }
         else if (choose == 0)
         {
-
+            break;
         }
     }
 }
@@ -266,7 +269,7 @@ void Selling()
                     isFirst = false;
                     nameReceiptArr[receiptSize - 1] = nameArr[chooseID - 1];
                     countReceiptArr[receiptSize - 1] = chooseCount;
-                    priceReceiptArr[receiptSize - 1] = priceArr[chooseID - 1] * chooseCount;
+                    priceReceiptArr[receiptSize - 1] = priceArr[chooseID - 1];// * chooseCount;
                     countArr[chooseID - 1] -= chooseCount;
 
                 }
@@ -291,7 +294,17 @@ void Selling()
         } while (true);
         std::cout << "ssadsdddf\n";
         PrintReceipt();
-
+        int newstart = 0;
+        std::cout << "Продолжить продажу? \n1 - Да\n2 - Вернуться в меню\n";
+        std::cin >> newstart;
+        if (newstart == 1)
+        {
+            continue;
+        }
+        else
+        {
+            break;
+        }
     }
 }
 void AddElementToReceipt(int& receiptSize, int id, int count)
@@ -339,7 +352,7 @@ void AddElementToReceipt(int& receiptSize, int id, int count)
     }
     nameReceiptArr[receiptSize - 1] = nameArr[id - 1];
     countReceiptArr[receiptSize - 1] = count;
-    priceReceiptArr[receiptSize - 1] = priceArr[id - 1] * count;
+    priceReceiptArr[receiptSize - 1] = priceArr[id - 1];// *count;
     countArr[id - 1] -=  count;
     delete[]nameReceiptArrTemp;
     delete[]countReceiptArrTemp;
@@ -351,8 +364,10 @@ void PrintReceipt()
     std::cout << "Название\t\t\tЦена\t\tКол-во\n\n";
     for (int i = 0; i < receiptSize; i++)
     {
-        std::cout << nameReceiptArr[i] << "\t" << countReceiptArr[i] << "\t\t" << priceReceiptArr[i] << "\n";
+        std::cout << nameReceiptArr[i] << "\t" << priceReceiptArr[i] << "\t\t" << countReceiptArr[i] << "\n";
+        itogSum = itogSum + priceReceiptArr[i] * countReceiptArr[i];
     }
+    std::cout << "\nИтоговая сума: " << itogSum << "\n";
     std::cout << "\n\n";
     //admin
 }
@@ -365,7 +380,7 @@ void ChangePrice()
         std::cout << "Введите id товара: \n";
         std::cin >> id;
     } while (id < 1 || id > idArr[size - 1]);
-    std::cout << "Текущая цена продукта " << nameArr[id-1] << ": " << priceArr[id - 1];
+    std::cout << "Текущая цена продукта " << nameArr[id-1] << ": " << priceArr[id - 1] << "\n";
     do
     {
         std::cout << "Введите новую цену товара: \n";
@@ -373,4 +388,163 @@ void ChangePrice()
     } while (newPrice < 0.01 || newPrice > 10000000.99);
     priceArr[id - 1] = newPrice;
     std::cout << "Изменение цены прошло успешно\n";
+}
+void RemFrStorage()
+{
+    int id;
+    int goodCount;
+    do
+    {
+        std::cout << "Введите id товара: \n";
+        std::cin >> id;
+    } while (id < 1 || id > idArr[size - 1]);
+    std::cout << "Текущее кол-во товара " << nameArr[id - 1] << ": " << countArr[id - 1] << "\n";
+    do
+    {
+        std::cout << "Сколько товаров списать со склада: \n";
+        std::cin >> goodCount;
+    } while (goodCount > countArr[id - 1] || goodCount <= 0);
+    countArr[id - 1] -= goodCount;
+    std::cout << "Списание товара прошло успешно\n";
+}
+void AddToStorage()
+{
+    int id;
+    int goodCount;
+    do
+    {
+        std::cout << "Введите id товара: \n";
+        std::cin >> id;
+    } while (id < 1 || id > idArr[size - 1]);
+    std::cout << "Текущее кол-во товара " << nameArr[id - 1] << ": " << countArr[id - 1] << "\n";
+    do
+    {
+        std::cout << "Сколько товаров добавить на склад: \n";
+        std::cin >> goodCount;
+    } while (goodCount <= 0);
+    countArr[id - 1] += goodCount;
+    std::cout << "Добавление товара прошло успешно\n";
+}
+void ChangeStorage()
+{
+    int choose;
+    do
+    {
+        std::cout << "Изменение склада. \n1 - добавить новый товар\n2 - удалить товар\n3 - выйти\n";
+        std::cin >> choose;
+    } while (choose < 1 || choose > 3);
+    if (choose == 1)
+    {
+        AddElToEnd();
+    }
+    else if (choose == 2)
+    {
+        DelElByIn();
+    }
+    else if (choose == 3)
+    {
+        std::cout << "Выход\n";
+    }
+}
+void AddElToEnd()
+{
+    int* idArrTemp = new int[size];
+    std::string* nameArrTemp = new std::string[size];
+    int* countArrTemp = new int[size];
+    double* priceArrTemp = new double[size];
+    for (int i = 0; i < size; i++)
+    {
+        nameArrTemp[i] = nameArr[i];
+        countArrTemp[i] = countArr[i];
+        priceArrTemp[i] = priceArr[i];
+        idArrTemp[i] = idArr[i];
+    }
+    delete[]nameArr;
+    delete[]countArr;
+    delete[]priceArr;
+    delete[]idArr;
+
+    size++;
+
+    nameArr = new std::string[size];
+    countArr = new int[size];
+    priceArr = new double[size];
+    idArr = new int[size];
+
+    for (int i = 0; i < size - 1; i++)
+    {
+        nameArr[i] = nameArrTemp[i];
+        countArr[i] = countArrTemp[i];
+        priceArr[i] = priceArrTemp[i];
+        idArr[i] = idArrTemp[i];
+    }
+    
+
+    idArr[size - 1] = size - 1;
+    std::cout << "Введите имя нового товара:\n";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, nameArr[size - 1]);
+    std::cout << "Введите кол-во нового товара:\n";
+    std::cin >> countArr[size - 1];
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cout << "Введите цену нового товара:\n";
+    std::cin >> priceArr[size - 1];
+    std::cout << "Товар успешно добавлен\n\n";
+    delete[]nameArrTemp;
+    delete[]countArrTemp;
+    delete[]priceArrTemp;
+    delete[]idArrTemp;
+}
+void DelElByIn()
+{
+    int* idArrTemp = new int[size];
+    std::string* nameArrTemp = new std::string[size];
+    int* countArrTemp = new int[size];
+    double* priceArrTemp = new double[size];
+    for (int i = 0; i < size; i++)
+    {
+        nameArrTemp[i] = nameArr[i];
+        countArrTemp[i] = countArr[i];
+        priceArrTemp[i] = priceArr[i];
+        idArrTemp[i] = idArr[i];
+    }
+    delete[]nameArr;
+    delete[]countArr;
+    delete[]priceArr;
+    delete[]idArr;
+
+    nameArr = new std::string[size];
+    countArr = new int[size];
+    priceArr = new double[size];
+    idArr = new int[size];
+    int element;
+    do
+    {
+        std::cout << "Введите id товара, который хотите удалить\n";
+        std::cin >> element;
+    } while (element < 0 || element > size);
+    size--;
+    for (int i = 0, j = 0; i < size; i++, j++)
+    {
+        if (i != element - 1)
+        {
+            nameArr[i] = nameArrTemp[j];
+            countArr[i] = countArrTemp[j];
+            priceArr[i] = priceArrTemp[j];
+            idArr[i] = idArrTemp[i];
+        }
+        else
+        {
+            j++;
+            nameArr[i] = nameArrTemp[j];
+            countArr[i] = countArrTemp[j];
+            priceArr[i] = priceArrTemp[j];
+            idArr[i] = idArrTemp[i];
+        }
+    }
+    std::cout << "\nУдаление прошло успешно\n\n";
+    delete[]nameArrTemp;
+    delete[]countArrTemp;
+    delete[]priceArrTemp;
+    delete[]idArrTemp;
 }
