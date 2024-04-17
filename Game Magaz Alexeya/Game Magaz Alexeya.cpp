@@ -22,14 +22,15 @@ void AddToStorage();
 void ChangeStorage();
 void AddElToEnd();
 void DelElByIn();
-
+void Skid1();
+void Skid2();
 //тестовые функции
 template <typename ArrType>
 void PrintArr(ArrType arr[], int size);
 // Размеры
 int size = 10;
 int receiptSize = 1;
-double itogSum = 0;
+double itogSum = 0.00;
 // Глобальные массивы склада
 int* idArr = new int[size];
 std::string* nameArr = new std::string[size];
@@ -271,7 +272,6 @@ void Selling()
                     countReceiptArr[receiptSize - 1] = chooseCount;
                     priceReceiptArr[receiptSize - 1] = priceArr[chooseID - 1];// * chooseCount;
                     countArr[chooseID - 1] -= chooseCount;
-
                 }
                 else if (!isFirst)
                 {
@@ -288,12 +288,11 @@ void Selling()
             std::cin >> confirm2;
             if (confirm2 == 2)
             {
-                std::cout << "sddf\n";
                 break;
             }
-        } while (true);
-        std::cout << "ssadsdddf\n";
+        } while (true);    
         PrintReceipt();
+        isFirst = true;
         int newstart = 0;
         std::cout << "Продолжить продажу? \n1 - Да\n2 - Вернуться в меню\n";
         std::cin >> newstart;
@@ -368,6 +367,14 @@ void PrintReceipt()
         itogSum = itogSum + priceReceiptArr[i] * countReceiptArr[i];
     }
     std::cout << "\nИтоговая сума: " << itogSum << "\n";
+    delete[]nameReceiptArr;
+    delete[]countReceiptArr;
+    delete[]priceReceiptArr;
+    nameReceiptArr = new std::string[receiptSize];
+    countReceiptArr = new int[receiptSize];
+    priceReceiptArr = new double[receiptSize];
+    itogSum = 0.00;
+    receiptSize = 1;
     std::cout << "\n\n";
     //admin
 }
@@ -547,4 +554,14 @@ void DelElByIn()
     delete[]countArrTemp;
     delete[]priceArrTemp;
     delete[]idArrTemp;
+}
+void Skid1()
+{
+
+
+}
+void Skid2()
+{
+
+
 }
