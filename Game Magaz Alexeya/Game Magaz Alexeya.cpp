@@ -4,6 +4,7 @@
 //#include <iomanip>
 #include <limits>
 #include <cmath>
+
 //#include <Windows.h>
 // Игровой Магаз Алексея
 // Функции
@@ -24,6 +25,7 @@ void AddElToEnd();
 void DelElByIn();
 void Skid1();
 void Skid2();
+void StoreForm();
 //тестовые функции
 template <typename ArrType>
 void PrintArr(ArrType arr[], int size);
@@ -108,17 +110,21 @@ void Start()
             int schooseStorageType;
             do
             {
-                std::cout << "Выберите формат склада: \n1 - Готовый склад \n2 - создать склад вручную\n";
+                system("cls");
+                std::cout << "Выберите формат склада: \n1 - Готовый склад \n2 - Создать склад вручную\n";
                 std::cin >> schooseStorageType;
             } while (schooseStorageType < 1 || schooseStorageType > 2);
             if (schooseStorageType == 1)
             {
                 CreateStore();
+                system("cls");
                 Shop();
             }
             else if (schooseStorageType == 2)
             {
-
+                system("cls");
+                StoreForm();
+                Shop();
             }
         }
     } while (!exit);
@@ -163,6 +169,7 @@ void Shop()
     {
         do
         {
+            
             std::cout << "1) Показать склад\n";
             std::cout << "2) Начать продажу\n";
             std::cout << "3) изменить цену\n";
@@ -204,6 +211,7 @@ void Shop()
 }
 void ShopStorage()
 {
+    system("cls");
     std::cout << "id товара\tНазвание\t\t\tЦена\t\tКол-во\n\n";
     for (int i = 0; i < size; i++)
     {
@@ -313,16 +321,19 @@ void Selling()
         std::cin >> newstart;
         if (newstart == 1)
         {
+            system("cls");
             continue;
         }
         else
         {
+            system("cls");
             break;
         }
     }
 }
 void AddElementToReceipt(int& receiptSize, int id, int count)
 {
+    system("cls");
     /*
     int* arr2 = new int[size];
     for (int i = 0; i < size; i++)
@@ -374,7 +385,7 @@ void AddElementToReceipt(int& receiptSize, int id, int count)
 }
 void PrintReceipt()
 {
-
+    system("cls");
     std::cout << "Название\t\t\tЦена\t\tКол-во\n\n";
     for (int i = 0; i < receiptSize; i++)
     {
@@ -602,4 +613,69 @@ void Skid2()
         "Если сумма чека больше 10999 рубей, то вы получаете скидку в 10%!!!\n";
     std::cout << "Вы проходите по этой акции!\n";
     itogSum = itogSum * 0.9;
+}
+void StoreForm()
+{
+    size = 1;
+    int idchet = 0;
+    int exit = 0;
+    while(true)
+    {
+        std::cout << "Введите имя " << idchet + 1 << " товара: \n";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::getline(std::cin, nameArr[size - 1]);
+        std::cout << "Введите цену " << idchet + 1 << " товара: \n";
+        std::cin >> priceArr[idchet];
+        std::cout << "Введите количество " << idchet + 1 << " товара: \n";
+        std::cin >> countArr[idchet];
+        idArr[idchet] = idchet;
+        while (exit < 1 || exit > 2)
+        {
+            std::cout << "Хотите создать ещё один товар?\n1 - Да\n2 - Нет\n";
+            std::cin >> exit;
+        }
+        if (exit == 2)
+        {
+            exit = 0;
+            idchet = 0;
+            break;
+        }
+        else
+        {
+            int* idArrTemp = new int[size];
+            std::string* nameArrTemp = new std::string[size];
+            int* countArrTemp = new int[size];
+            double* priceArrTemp = new double[size];
+            for (int i = 0; i < size; i++)
+            {
+                nameArrTemp[i] = nameArr[i];
+                countArrTemp[i] = countArr[i];
+                priceArrTemp[i] = priceArr[i];
+                idArrTemp[i] = idArr[i];
+            }
+            delete[]nameArr;
+            delete[]countArr;
+            delete[]priceArr;
+            delete[]idArr;
+
+            size++;
+
+            nameArr = new std::string[size];
+            countArr = new int[size];
+            priceArr = new double[size];
+            idArr = new int[size];
+
+            for (int i = 0; i < size - 1; i++)
+            {
+                nameArr[i] = nameArrTemp[i];
+                countArr[i] = countArrTemp[i];
+                priceArr[i] = priceArrTemp[i];
+                idArr[i] = idArrTemp[i];
+            }
+            exit = 0;
+            idchet++;
+        }
+        system("cls");
+    }
+    system("cls");
 }
