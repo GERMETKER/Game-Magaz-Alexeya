@@ -40,8 +40,8 @@ double* priceArr = new double[size];
 std::string* nameReceiptArr = new std::string[receiptSize];
 int* countReceiptArr = new int[receiptSize];
 double* priceReceiptArr = new double[receiptSize];
-
-
+// Скидки
+bool skidkaOne = false, skidkaTwo = false;
 
 /*
     inline int max(int a, int b)
@@ -65,8 +65,8 @@ int main()
     setlocale(LC_ALL, "ru");
     srand(time(NULL));
 
-    
-   Start();
+
+    Start();
     delete[]idArr;
     delete[]nameArr;
     delete[]countArr;
@@ -118,7 +118,7 @@ void Start()
             }
             else if (schooseStorageType == 2)
             {
-                
+
             }
         }
     } while (!exit);
@@ -126,13 +126,13 @@ void Start()
 void CreateStore()
 {
     const int size_pwgood = 10;
-    int id[size_pwgood]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    std::string name[size_pwgood]{"Devil May Cry 5 (PS4)      ", "Rezident Evil 4 (PS4)      ",
+    int id[size_pwgood]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    std::string name[size_pwgood]{ "Devil May Cry 5 (PS4)      ", "Rezident Evil 4 (PS4)      ",
         "Cyberpunk 2077 (PS4)       ", "GTA V (PS4)                ", "Detroit: Become Human (PS4)", "Far Cry 3 (PS4)            ",
-        "Red Dead Redemption 2 (PS4)", "Hogwartz Legacy (PS4)      ", "Minecraft (PS4)            ", "Terraria (PS4)             "};
-    int count[size_pwgood]{9, 10, 10, 10, 8, 12, 10, 10, 11, 9};
-    double price[size_pwgood]{2999.99, 3799.55, 2899.44, 3099.99, 2756.86,
-        2673.49, 3300.79, 4700.39, 4990.64, 2739.99};
+        "Red Dead Redemption 2 (PS4)", "Hogwartz Legacy (PS4)      ", "Minecraft (PS4)            ", "Terraria (PS4)             " };
+    int count[size_pwgood]{ 9, 10, 10, 10, 8, 12, 10, 10, 11, 9 };
+    double price[size_pwgood]{ 2999.99, 3799.55, 2899.44, 3099.99, 2756.86,
+        2673.49, 3300.79, 4700.39, 4990.64, 2739.99 };
     FillArr(id, idArr, size);
     FillArr(name, nameArr, size);
     FillArr(count, countArr, size);
@@ -217,6 +217,7 @@ void Selling()
     int chooseID, chooseCount, confirm;
     int confirm2;
     bool isFirst = true;
+    int skidka = 0;
     while (true)
     {
         do
@@ -276,13 +277,13 @@ void Selling()
                 else if (!isFirst)
                 {
                     AddElementToReceipt(receiptSize, chooseID, chooseCount);
-                } 
+                }
             }
             else if (confirm == 2)
             {
                 continue;
             }
-            
+
             std::cout << "Купить ещё один товар?\n";
             std::cout << "1 - Да \n2 - Нет\n";
             std::cin >> confirm2;
@@ -290,7 +291,21 @@ void Selling()
             {
                 break;
             }
-        } while (true);    
+        } while (true);
+        for (int i = 0; i < receiptSize; i++)
+        {
+            itogSum = itogSum + priceReceiptArr[i] * countReceiptArr[i];
+        }
+        if (itogSum > 10999.99)
+        {
+            Skid2();
+        }
+        std::cout << "Хотите получить скидку, ответив на вопрос? \n1 - Да\n2 - Нет, спасибо\n";
+        std::cin >> skidka;
+        if (skidka == 1)
+        {
+            Skid1();
+        }
         PrintReceipt();
         isFirst = true;
         int newstart = 0;
@@ -352,19 +367,26 @@ void AddElementToReceipt(int& receiptSize, int id, int count)
     nameReceiptArr[receiptSize - 1] = nameArr[id - 1];
     countReceiptArr[receiptSize - 1] = count;
     priceReceiptArr[receiptSize - 1] = priceArr[id - 1];// *count;
-    countArr[id - 1] -=  count;
+    countArr[id - 1] -= count;
     delete[]nameReceiptArrTemp;
     delete[]countReceiptArrTemp;
     delete[]priceReceiptArrTemp;
 }
 void PrintReceipt()
 {
-    
+
     std::cout << "Название\t\t\tЦена\t\tКол-во\n\n";
     for (int i = 0; i < receiptSize; i++)
     {
         std::cout << nameReceiptArr[i] << "\t" << priceReceiptArr[i] << "\t\t" << countReceiptArr[i] << "\n";
-        itogSum = itogSum + priceReceiptArr[i] * countReceiptArr[i];
+    }
+    if (skidkaTwo)
+    {
+        std::cout << "Скидка: 10%\n";
+    }
+    if (skidkaOne)
+    {
+        std::cout << "Скидка: 30%\n";
     }
     std::cout << "\nИтоговая сума: " << itogSum << "\n";
     delete[]nameReceiptArr;
@@ -375,6 +397,8 @@ void PrintReceipt()
     priceReceiptArr = new double[receiptSize];
     itogSum = 0.00;
     receiptSize = 1;
+    skidkaOne = false;
+    skidkaTwo = false;
     std::cout << "\n\n";
     //admin
 }
@@ -387,7 +411,7 @@ void ChangePrice()
         std::cout << "Введите id товара: \n";
         std::cin >> id;
     } while (id < 1 || id > idArr[size - 1]);
-    std::cout << "Текущая цена продукта " << nameArr[id-1] << ": " << priceArr[id - 1] << "\n";
+    std::cout << "Текущая цена продукта " << nameArr[id - 1] << ": " << priceArr[id - 1] << "\n";
     do
     {
         std::cout << "Введите новую цену товара: \n";
@@ -485,7 +509,7 @@ void AddElToEnd()
         priceArr[i] = priceArrTemp[i];
         idArr[i] = idArrTemp[i];
     }
-    
+
 
     idArr[size - 1] = size - 1;
     std::cout << "Введите имя нового товара:\n";
@@ -557,11 +581,25 @@ void DelElByIn()
 }
 void Skid1()
 {
-
-
+    std::string lang_choose;
+    std::cout << "Какой язык программирования - лучший?\n(Введите название на английском языке с большой буквы)\n";
+    std::cin >> lang_choose;
+    if (lang_choose == "C++")
+    {
+        std::cout << "Хорош!\nВы выиграли скидку в 30%!!\n";
+        itogSum = itogSum * 0.7;
+        skidkaOne = true;
+    }
+    else
+    {
+        std::cout << "Вы ничего не выиграли\n";
+    }
 }
 void Skid2()
 {
-
-
+    skidkaTwo = true;
+    std::cout << "В нашем маназине проходит акция:\n" <<
+        "Если сумма чека больше 10999 рубей, то вы получаете скидку в 10%!!!\n";
+    std::cout << "Вы проходите по этой акции!\n";
+    itogSum = itogSum * 0.9;
 }
